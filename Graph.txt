@@ -1,0 +1,106 @@
+package com.vikasdew.javaapp;
+
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Scanner;
+import java.util.Stack;
+
+public class GraphImplementation {
+    private static LinkedList<Integer> adj[];
+    GraphImplementation(int v)
+    {
+        adj = new LinkedList[v];
+        for (int i = 0;i<v;i++){
+            adj[i] = new LinkedList<Integer>();
+        }
+    }
+    public static void addEdge(int source, int destination){
+        adj[source].add(destination);
+        adj[destination].add(source);
+    }
+
+    public static void main(String[] args){
+        Scanner sc = new Scanner(System.in);
+        int v = sc.nextInt();
+        int e = sc.nextInt();
+        GraphImplementation graph = new GraphImplementation(v);
+        for(int i =0;i<e;i++){
+            int source = sc.nextInt();
+            int destination = sc.nextInt();
+            addEdge(source,destination);
+        }
+        int s = sc.nextInt();
+        int d = sc.nextInt();
+        System.out.println(dfsStack(s,d));
+//        System.out.print(dfs(s,d));
+//        System.out.println(bfs(s,d));
+//        for(int i = 0;i< adj.length;i++){
+//            System.out.println(adj[i]);
+//        }
+    }
+    public static boolean dfsStack(int source, int destination){
+        boolean vis[] = new boolean[adj.length];
+        vis[source] = true;
+        Stack<Integer> st = new Stack<>();
+        st.push(source);
+        while(!st.isEmpty()){
+            int cur = st.pop();
+            if(cur==destination) return true;
+            for(int negbr:adj[cur]){
+                if(!vis[negbr]){
+                    vis[negbr]=true;
+                    st.push(negbr);
+                }
+            }
+        }
+        return false;
+    }
+
+    public static boolean dfsRec(int source, int destination, boolean[] vis){
+        if(source==destination) return true;
+        for(int negbr:adj[source]){
+            if(!vis[negbr]){
+            vis[source] = true;
+            boolean inConnected = dfsRec(negbr,destination,vis);
+            if(inConnected) return true;
+            }
+        }
+        return false;
+    }
+    public static boolean dfs(int source, int destination){
+
+        boolean[] vis = new boolean[adj.length];
+        vis[source]=true;
+        return dfsRec(source,destination,vis);
+
+    }
+    public static int bfs(int source, int destination){
+        boolean vis[] = new boolean[adj.length];
+        Queue<Integer> q = new LinkedList<>();
+        int[] parent = new int[adj.length];
+        q.add(source);
+        parent[source] = -1;
+        vis[source] = true;
+        while(!q.isEmpty()){
+            int cur = q.poll();
+            if(cur==destination) break;
+
+            for (int negbr:adj[cur]){
+                if(!vis[negbr]){
+                    vis[negbr]=true;
+                    q.add(negbr);
+                    parent[negbr] = cur;
+                }
+            }
+        }
+        int cur = destination;
+        int distance = 0;
+        while(parent[cur] != -1){
+            System.out.print(cur+" ==> ");
+            cur = parent[cur];
+            distance++;
+        }
+        System.out.println(cur);
+        return distance;
+    }
+}
