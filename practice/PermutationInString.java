@@ -13,7 +13,8 @@ public class PermutationInString {
     }
     public static void permutation(String s, int l, int r){
         if(l==r){
-            if(st.contains(s))return;
+            if(st.contains(s))
+                return;
             st.add(s);
             System.out.println(s);
             return;
